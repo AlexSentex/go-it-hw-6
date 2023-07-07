@@ -75,10 +75,9 @@ def sanitize_folder(src: Path, outp: Path) -> None:
 
 
 def move_file(file: Path) -> None:
-    print(file)
-    ext = file.suffix[1:]
-    name = file.name[:-len(file.suffix)]
-    parent = file.parent
+    ext = file.suffix[1:]       # беремо розширення файлу для списку знайдених розширень
+    name = file.name[:-len(file.suffix)]        # беремо ім'я файлу без розширення
+
     if file.suffix in extensions:       # перевіряємо чи файл є у відомих розширеннях
         
         # створюємо папку якщо немає такої
@@ -112,10 +111,12 @@ def move_file(file: Path) -> None:
         # додаємо у сет знайдених невідомих розширень
         UNRECOGN_EXT.add(ext)
 
+        # Додаємо назву файлу у список файлів відповідної категорії
         OTHER.append(normalize(name) + file.suffix)
+
     shutil.move(file, path)
 
-def normalize(name: str) -> str:
+def normalize(name: str) -> str:        # нормалізуємо назви
     name = name.translate(TRANSLATION)
     name = re.sub(r'\W', '_', name)
     return name
