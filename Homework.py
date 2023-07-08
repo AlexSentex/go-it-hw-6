@@ -82,7 +82,7 @@ def move_file(file: Path) -> None:
         
         # створюємо папку якщо немає такої
         folder = extensions[file.suffix]
-        Path.mkdir(Path(fr'{TARGET}\{folder}'), exist_ok=True, parents=True)
+        Path.mkdir(os.path.join(TARGET, folder), exist_ok=True, parents=True)
 
         """ 
         Додаємо назву файлу у список файлів відповідної категорії
@@ -94,19 +94,19 @@ def move_file(file: Path) -> None:
         
         if file.suffix in ['.zip', '.tar', '.gz']:
             # розпаковуємо архіви
-            shutil.unpack_archive(file, Path(fr'{TARGET}\{folder}\{normalize(name)}'))
+            shutil.unpack_archive(file, os.path.join(TARGET, folder, normalize(name)))
             file.unlink()
             return
         else:
             # присвоюємо шлях для переміщення файлів
-            path = fr'{LOCATION}\{folder}\{normalize(name) + file.suffix}'
+            path = os.path.join(LOCATION, folder, normalize(name) + file.suffix)
 
         # додаємо у сет знайдених відомих розширень
         RECOGN_EXT.add(ext)
 
     else:
-        Path.mkdir(Path(fr'{TARGET}\Other'), exist_ok=True, parents=True)
-        path = fr'{LOCATION}\Other\{normalize(name) + file.suffix}'
+        Path.mkdir(os.path.join(TARGET, 'Other'), exist_ok=True, parents=True)
+        path = os.path.join(LOCATION, 'Other', normalize(name) + file.suffix)
 
         # додаємо у сет знайдених невідомих розширень
         UNRECOGN_EXT.add(ext)
