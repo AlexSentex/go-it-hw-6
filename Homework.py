@@ -82,7 +82,7 @@ def move_file(file: Path) -> None:
         
         # створюємо папку якщо немає такої
         folder = extensions[file.suffix]
-        Path.mkdir(Path(fr'{TARGET}\{folder}'), exist_ok=True, parents=True)
+        Path.mkdir(Path.joinpath(TARGET, folder), exist_ok=True, parents=True)
 
         """ 
         Додаємо назву файлу у список файлів відповідної категорії
@@ -94,19 +94,19 @@ def move_file(file: Path) -> None:
         
         if file.suffix in ['.zip', '.tar', '.gz']:
             # розпаковуємо архіви
-            shutil.unpack_archive(file, Path(fr'{TARGET}\{folder}\{normalize(name)}'))
+            shutil.unpack_archive(file, Path.joinpath(TARGET, folder, normalize(name)))
             file.unlink()
             return
         else:
             # присвоюємо шлях для переміщення файлів
-            path = fr'{LOCATION}\{folder}\{normalize(name) + file.suffix}'
+            path = Path.joinpath(LOCATION, folder, normalize(name) + file.suffix)
 
         # додаємо у сет знайдених відомих розширень
         RECOGN_EXT.add(ext)
 
     else:
-        Path.mkdir(Path(fr'{TARGET}\Other'), exist_ok=True, parents=True)
-        path = fr'{LOCATION}\Other\{normalize(name) + file.suffix}'
+        Path.mkdir(Path.joinpath(TARGET, 'Other'), exist_ok=True, parents=True)
+        path = Path.joinpath(LOCATION, 'Other', normalize(name) + file.suffix)
 
         # додаємо у сет знайдених невідомих розширень
         UNRECOGN_EXT.add(ext)
@@ -123,7 +123,7 @@ def normalize(name: str) -> str:        # нормалізуємо назви
 
 if __name__ == '__main__':
     LOCATION = Path(sys.argv[1] if len(sys.argv) > 1 else '.')
-    TARGET = Path (sys.argv[2] if len(sys.argv) > 2 else LOCATION)
+    TARGET = Path(sys.argv[2] if len(sys.argv) > 2 else LOCATION)
     sanitize_folder(LOCATION, TARGET)
     print('Recognized extensions: {}'.format(re.sub(r'{|}|\'|"', '', RECOGN_EXT.__str__())))
     print('Unrecognized extensions {}'.format(re.sub(r'{|}|\'|"', '', UNRECOGN_EXT.__str__())))
